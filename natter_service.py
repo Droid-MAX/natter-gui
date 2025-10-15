@@ -3,6 +3,7 @@ import threading
 import os
 import time
 import queue
+import psutil
 
 class NatterService:
     def __init__(self):
@@ -11,6 +12,7 @@ class NatterService:
         self.output_queue = queue.Queue()
         self.output_thread = None
         self.monitor_thread = None
+        self.process_pid = None
 
     def start(self, config):
         """启动 Natter 服务"""
@@ -49,6 +51,7 @@ class NatterService:
                     creationflags=subprocess.CREATE_NO_WINDOW
                 )
 
+            self.process_pid = self.process.pid
             self.is_running_flag = True
 
             # 启动输出读取线程
@@ -65,16 +68,80 @@ class NatterService:
 
     def stop(self):
         """停止 Natter 服务"""
-        if self.process:
+        if self.process or self.process_pid:
             try:
-                self.process.terminate()
-                self.process.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                self.process.kill()
-                self.process.wait()
+                # 首先尝试终止整个进程树
+                self.kill_process_tree()
+
+                # 然后确保主进程也被终止
+                if self.process:
+                    try:
+                        self.process.terminate()
+                        self.process.wait(timeout=3)
+                    except (subprocess.TimeoutExpired, AttributeError):
+                        if self.process:
+                            self.process.kill()
+                            self.process.wait()
+            except Exception as e:
+                print(f"停止进程时发生错误: {e}")
             finally:
                 self.process = None
+                self.process_pid = None
                 self.is_running_flag = False
+
+    def kill_process_tree(self):
+        """终止整个进程树"""
+        try:
+            if self.process_pid:
+                # 使用 psutil 终止整个进程树
+                parent = psutil.Process(self.process_pid)
+                children = parent.children(recursive=True)
+
+                # 先终止所有子进程
+                for child in children:
+                    try:
+                        child.terminate()
+                    except psutil.NoSuchProcess:
+                        pass
+
+                # 等待子进程终止
+                gone, still_alive = psutil.wait_procs(children, timeout=3)
+
+                # 强制终止仍然存活的子进程
+                for child in still_alive:
+                    try:
+                        child.kill()
+                    except psutil.NoSuchProcess:
+                        pass
+
+                # 终止父进程
+                try:
+                    parent.terminate()
+                    parent.wait(timeout=3)
+                except (psutil.TimeoutExpired, psutil.NoSuchProcess):
+                    try:
+                        parent.kill()
+                    except psutil.NoSuchProcess:
+                        pass
+
+        except psutil.NoSuchProcess:
+            # 进程已经不存在
+            pass
+        except Exception as e:
+            print(f"终止进程树时发生错误: {e}")
+
+    def cleanup_all_natter_processes(self):
+        """清理所有 natter.exe 进程（紧急情况使用）"""
+        try:
+            for proc in psutil.process_iter(['pid', 'name']):
+                try:
+                    if proc.info['name'] and 'natter.exe' in proc.info['name'].lower():
+                        print(f"强制终止残留进程: {proc.info['pid']}")
+                        proc.kill()
+                except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                    continue
+        except Exception as e:
+            print(f"清理进程时发生错误: {e}")
 
     def check_nat_type(self):
         """检测 NAT 类型"""
@@ -136,6 +203,8 @@ class NatterService:
             while self.is_running_flag:
                 if not self.process_alive():
                     self.is_running_flag = False
+                    # 进程异常退出时清理残留
+                    self.cleanup_all_natter_processes()
                     break
                 time.sleep(1)
         except Exception:

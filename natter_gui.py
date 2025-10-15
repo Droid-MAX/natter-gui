@@ -276,8 +276,16 @@ License: MIT"""
     def on_closing(self):
         """程序关闭时的处理"""
         self.running = False
-        if self.natter_service.is_running():
+
+        # 停止 NAT 检测
+        self.nat_check_running = False
+
+        # 停止服务并清理进程
+        if hasattr(self, 'natter_service') and self.natter_service:
             self.natter_service.stop()
+            # 额外清理确保没有残留
+            self.natter_service.cleanup_all_natter_processes()
+
         self.root.destroy()
 
 
