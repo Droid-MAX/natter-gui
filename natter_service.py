@@ -81,7 +81,7 @@ class NatterService:
         # 查找 natter 可执行文件
         natter_path = self.find_natter()
         if not natter_path:
-            raise Exception("未找到 natter 可执行文件")
+            raise Exception("未找到 natter.exe 可执行文件")
 
         try:
             result = subprocess.run(
