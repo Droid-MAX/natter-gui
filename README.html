@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Natter 服务管理器 - 使用说明</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        header .version {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px;
+        }
+        section {
+            margin-bottom: 40px;
+        }
+        h2 {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        h3 {
+            color: #764ba2;
+            margin: 20px 0 10px 0;
+            font-size: 1.4em;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        ul, ol {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .feature-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .feature-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .screenshot {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .screenshot img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .warning {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #667eea;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #333;
+            color: white;
+            margin-top: 40px;
+        }
+        .button {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin: 10px 5px;
+            transition: background 0.3s;
+        }
+        .button:hover {
+            background: #5a6fd8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Natter 服务管理器 v1.0</h1>
+            <p>基于 Natter 的图形化端口映射工具，用于穿透全锥形 NAT</p>
+        </header>
+
+        <div class="content">
+            <section id="introduction">
+                <h2>软件简介</h2>
+                <p>Natter 服务管理器是一个基于 Python 和 Tkinter 开发的图形用户界面程序，专门用于管理和配置 Natter 端口映射工具。它提供了直观的界面来启动、停止和配置 Natter 服务，无需记忆复杂的命令行参数。</p>
+            </section>
+
+            <section id="features">
+                <h2>功能特性</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>🚀 一键服务管理</h4>
+                        <p>简单直观的启动/停止按钮，轻松管理 Natter 服务状态</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>⚙️ 图形化配置</h4>
+                        <p>通过标签页界面配置所有 Natter 参数，支持绑定模式和转发模式</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔍 NAT 类型检测</h4>
+                        <p>异步检测 NAT 类型，不会阻塞 GUI 界面，检测结果清晰显示</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📝 实时日志监控</h4>
+                        <p>实时显示 Natter 运行日志，支持清空和导出日志功能</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔄 配置持久化</h4>
+                        <p>自动保存和加载用户配置，下次启动无需重新设置</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📁 脚本支持</h4>
+                        <p>完整的 -e 参数支持，配置脚本在映射地址变化时执行</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="installation">
+                <h2>部署和运行</h2>
+
+                <h3>系统要求</h3>
+                <ul>
+                    <li>Windows 7 或更高版本的64位系统</li>
+                    <li>Natter 可执行文件 (natter.exe)</li>
+                </ul>
+
+            </section>
+
+            <section id="usage">
+                <h2>使用说明</h2>
+
+                <h3>主界面</h3>
+                <p>主界面包含以下主要区域：</p>
+                <ul>
+                    <li><strong>服务状态</strong>：显示 Natter 服务的运行状态（运行中/未运行）</li>
+                    <li><strong>控制按钮</strong>：启动服务、停止服务、配置、检测 NAT 类型</li>
+                    <li><strong>运行日志</strong>：实时显示 Natter 的输出信息，支持清空和导出</li>
+                </ul>
+
+                <h3>菜单功能</h3>
+                <table>
+                    <tr>
+                        <th>菜单</th>
+                        <th>功能</th>
+                    </tr>
+                    <tr>
+                        <td>文件</td>
+                        <td>导出日志、退出程序</td>
+                    </tr>
+                    <tr>
+                        <td>设置</td>
+                        <td>打开配置对话框</td>
+                    </tr>
+                    <tr>
+                        <td>日志</td>
+                        <td>清空日志、导出日志</td>
+                    </tr>
+                    <tr>
+                        <td>工具</td>
+                        <td>检测 NAT 类型</td>
+                    </tr>
+                    <tr>
+                        <td>帮助</td>
+                        <td>显示关于信息</td>
+                    </tr>
+                </table>
+
+                <h3>配置说明</h3>
+                <p>配置对话框包含四个标签页：</p>
+
+                <h4>基本设置</h4>
+                <ul>
+                    <li><strong>UDP 模式 (-u)</strong>：启用 UDP 模式</li>
+                    <li><strong>启用 UPnP/IGD 发现 (-U)</strong>：启用 UPnP 自动端口映射</li>
+                    <li><strong>详细模式 (-v)</strong>：显示详细调试信息</li>
+                    <li><strong>映射地址改变时退出 (-q)</strong>：检测到映射地址变化时自动退出</li>
+                    <li><strong>STUN 服务器地址 (-s)</strong>：自定义 STUN 服务器地址</li>
+                    <li><strong>保活间隔 (-k)</strong>：设置保活包发送间隔（秒）</li>
+                </ul>
+
+                <h4>绑定设置</h4>
+                <ul>
+                    <li><strong>网络接口/IP (-i)</strong>：指定绑定的网络接口或 IP 地址</li>
+                    <li><strong>绑定端口 (-b)</strong>：指定绑定的本地端口</li>
+                </ul>
+
+                <h4>转发设置</h4>
+                <ul>
+                    <li><strong>转发方法 (-m)</strong>：选择转发方法（iptables、nftables、socat、gost、socket）</li>
+                    <li><strong>目标 IP 地址 (-t)</strong>：指定转发目标 IP 地址</li>
+                    <li><strong>目标端口 (-p)</strong>：指定转发目标端口</li>
+                    <li><strong>持续重试直到目标端口打开 (-r)</strong>：持续重试直到目标端口可用</li>
+                </ul>
+
+                <h4>脚本设置</h4>
+                <ul>
+                    <li><strong>脚本路径 (-e)</strong>：设置映射地址变化时执行的脚本路径</li>
+                    <li>脚本将接收以下环境变量：
+                        <ul>
+                            <li><code>NATTER_EXTERNAL_IP</code> - 外部 IP 地址</li>
+                            <li><code>NATTER_EXTERNAL_PORT</code> - 外部端口</li>
+                            <li><code>NATTER_INTERNAL_IP</code> - 内部 IP 地址</li>
+                            <li><code>NATTER_INTERNAL_PORT</code> - 内部端口</li>
+                            <li><code>NATTER_PROTOCOL</code> - 协议类型 (TCP/UDP)</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <div class="warning">
+                    <p><strong>重要：</strong>绑定模式和转发模式参数不能同时使用，请在配置时注意选择其中一种模式。</p>
+                </div>
+            </section>
+
+            <section id="troubleshooting">
+                <h2>故障排除</h2>
+
+                <h3>常见问题</h3>
+                <table>
+                    <tr>
+                        <th>问题</th>
+                        <th>解决方案</th>
+                    </tr>
+                    <tr>
+                        <td>启动服务失败，提示"未找到 natter 可执行文件"</td>
+                        <td>确保 <code>natter.exe</code> 位于程序同一目录或系统 PATH 环境变量中</td>
+                    </tr>
+                    <tr>
+                        <td>NAT 类型检测超时</td>
+                        <td>检查网络连接，确保 STUN 服务器可访问，或尝试更换 STUN 服务器</td>
+                    </tr>
+                    <tr>
+                        <td>绑定模式和转发模式冲突</td>
+                        <td>确保只使用其中一种模式，两种模式的参数不能同时设置</td>
+                    </tr>
+                    <tr>
+                        <td>端口绑定失败</td>
+                        <td>检查端口是否被其他程序占用，或尝试使用管理员权限运行</td>
+                    </tr>
+                </table>
+
+                <h3>日志分析</h3>
+                <p>如果遇到问题，请查看运行日志区域的信息：</p>
+                <ul>
+                    <li><strong>错误信息</strong>：程序会显示详细的错误信息，帮助诊断问题</li>
+                    <li><strong>Natter 输出</strong>：实时显示 Natter 工具的输出，包含连接状态和错误信息</li>
+                    <li><strong>导出日志</strong>：可以使用导出功能保存日志，便于后续分析</li>
+                </ul>
+            </section>
+
+            <section id="technical">
+                <h2>技术信息</h2>
+
+                <h3>多线程处理</h3>
+                <p>程序使用多线程技术确保界面响应性：</p>
+                <ul>
+                    <li><strong>主线程</strong>：处理用户界面和事件响应</li>
+                    <li><strong>状态监控线程</strong>：监控 Natter 进程状态和输出</li>
+                    <li><strong>NAT 检测线程</strong>：异步执行 NAT 类型检测</li>
+                </ul>
+
+                <h3>兼容性</h3>
+                <p>本程序与 Natter 工具完全兼容，支持所有 Natter 命令行参数，并通过图形界面提供更友好的配置方式。</p>
+            </section>
+
+            <section id="license">
+                <h2>许可证信息</h2>
+                <p>Natter 服务管理器基于 MIT 许可证发布，用户可以自由使用、修改和分发本软件。</p>
+                <p>本软件基于 Natter 工具开发，Natter 工具的许可证信息请参考其官方文档。</p>
+            </section>
+        </div>
+
+        <footer>
+            <p>Natter 服务管理器 &copy; 2025</p>
+            <p>基于 Natter 的图形化端口映射工具</p>
+        </footer>
+    </div>
+</body>
+</html>
