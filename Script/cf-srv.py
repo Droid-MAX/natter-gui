@@ -21,19 +21,19 @@ def load_config():
             try:
                 with open(config_path, 'r') as f:
                     config = json.load(f)
-                print(f"Loaded configuration from: {config_path}")
                 break
             except Exception as e:
-                print(f"Error loading config from {config_path}: {e}")
+                print(f"Error loading configuration: {e}")
 
     if config is None:
-        raise FileNotFoundError("Could not find cloudflare.json in any of the expected locations")
+        print("Could not find cloudflare.json in any of the expected locations")
+        sys.exit(1)
 
     # 从配置中获取值，如果不存在则使用默认值
-    cf_srv_service = config.get("service", "_mc")
-    cf_domain = config.get("domain", "example.com")
-    cf_auth_email = config.get("auth_email", "admin@example.com")
-    cf_auth_key = config.get("auth_key", "07d47f2a106b267c3cf8fc1a640ebb2a485bc")
+    cf_srv_service = config.get("service", "")
+    cf_domain = config.get("domain", "")
+    cf_auth_email = config.get("auth_email", "")
+    cf_auth_key = config.get("auth_key", "")
 
     return cf_srv_service, cf_domain, cf_auth_email, cf_auth_key
 
